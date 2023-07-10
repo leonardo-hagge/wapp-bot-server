@@ -1,0 +1,24 @@
+{
+   "type": "mysql",
+   "host": "127.0.0.1",
+   "port": 3306,
+   "username": "admin",
+   "password": "admin",
+   "database": "chat_bot_bel",
+   "synchronize": true,
+   "logging": false,
+   "entities": [
+      "dist/models/*.js"
+   ],
+   "migrations": [
+      "src/migration/**/*.ts"
+   ],
+   "subscribers": [
+      "src/subscriber/**/*.ts"
+   ],
+   "cli": {
+      "entitiesDir": "src/models",
+      "migrationsDir": "src/migration",
+      "subscribersDir": "src/subscriber"
+   }
+}
