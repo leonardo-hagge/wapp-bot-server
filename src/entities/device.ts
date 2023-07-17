@@ -1,19 +1,23 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany } from "typeorm"
+import { BaseModal } from "./base-model"
+import { type } from "os";
 
 @Entity('device')
-export class Device extends BaseEntity {
-    @PrimaryGeneratedColumn()
-    id: number
-
+export class Device extends BaseModal {
     @Column()
     number: string
 
     @Column()
     alias: string
 
-    @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
-    dateCreation: Date
 
-    @Column({ nullable: true, type: "datetime", default: () => "CURRENT_TIMESTAMP" })
-    dateModification: Date
+    @Column({ default: false })
+    isAuthenticated: boolean;
+
+    @Column({ default: false })
+    isRunning: boolean;
+
+    @Column({ type: 'text' })
+    qrcode_authentication: string;
+
 }

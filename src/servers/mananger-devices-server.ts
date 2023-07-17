@@ -1,8 +1,11 @@
 import { createServer } from 'http';
+import express from 'express';
 import { Server, Socket } from 'socket.io';
-import { deviceRepository } from './repositories/DeviceRepository';
-import QRCode from 'qrcode'
-import { Client, LocalAuth, MessageMedia } from 'whatsapp-web.js'
+import { deviceRepository } from '../repositories/DeviceRepository';
+import QRCode from 'qrcode';
+import { Client, LocalAuth, MessageMedia } from 'whatsapp-web.js';
+import path from 'path';
+
 
 
 type DevicesConnection = {
@@ -12,40 +15,32 @@ type DevicesConnection = {
 
 
 
-class ChatBotServer {
+class ManangerDevicesServer {
     public start() {
         const repo = deviceRepository;
 
-        repo.find().then((res) => console.log(res))
-        const httpServer = createServer();
+        // repo.find().then((res) => console.log(res))
+        const app = express();
+        const httpServer = createServer(app);
+
         const io = new Server(httpServer, {
             cors: {
-                origin: 'http://localhost:3000'
+                origin: 'http://localhost:3000',
+                credentials: true
             }
         });
-
-
-
-
-
-
 
 
         io.on('connection', (socket: any) => {
             let cons: DevicesConnection[] = [];
 
-
-            // console.log(socket.handshake.address)
-
             socket.emit('message', 'Conexão com servidor iniciada');
+
             socket.on('deviceId', (deviceId: any) => {
-
-
-
                 console.log(deviceId)
 
                 let client: Client = !cons.some(c => c.deviceId == deviceId) ? new Client({
-                    authStrategy: new LocalAuth({ clientId: 'bel-bot-device' + deviceId }),
+                    authStrategy: new LocalAuth({ clientId: 'bel-bot-device' + deviceId, dataPath: `${path.resolve('sessions')}` }),
                     puppeteer: {
                         headless: true,
                         args: [
@@ -72,7 +67,7 @@ class ChatBotServer {
                 client.on('qr', (qr: any) => {
                     console.log('qr received' + deviceId, qr);
 
-                    // socket.emit('qrcode', qr);
+                    //socket.emit('qrcode', qr);
 
                     QRCode.toDataURL(qr, (err: any, url: any) => {
                         socket.emit('qrcode', {
@@ -83,7 +78,7 @@ class ChatBotServer {
                 });
 
                 client.on('ready', () => {
-                    socket.emit('ready', 'BOT Dispositivo pronto!');
+                    socket.emit('deviceConnected', 'BOT Dispositivo pronto!');
                     socket.emit('message', 'BOT Dispositivo pronto!');
                     console.log('BOT Dispositivo pronto');
                 });
@@ -143,7 +138,6 @@ class ChatBotServer {
 
 
 
-
             // Lógica para lidar com eventos de cliente
             // socket.on('mensagem', (data: any) => {
             //     console.log('Mensagem recebida:', data);
@@ -155,15 +149,29 @@ class ChatBotServer {
         });
 
 
+
+
+
+
         httpServer.listen(4000, () => {
             console.log('Servidor socket ouvindo na porta 4000');
         });
 
     }
 
+
+    // createManterConnector() {
+
+    // }
+
 }
 
 
 
 
-export default new ChatBotServer().start;
+
+
+
+
+
+export default new ManangerDevicesServer().start;

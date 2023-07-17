@@ -28,6 +28,6 @@
         "src/types",
     ],
     "ts-node": {
-        "files": true
+        "files": true,
     }
 }

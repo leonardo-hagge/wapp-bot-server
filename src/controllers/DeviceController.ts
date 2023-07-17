@@ -34,7 +34,27 @@ export class DeviceController {
         const deviceId: number = +req.params.id;
         const repo = deviceRepository
 
-        repo.find({ where: { id: deviceId } }).then(dev => {
+        repo.findOne({ where: { id: deviceId } }).then(dev => {
+            return res.json(dev)
+        }).catch(error => {
+            return res.json(error)
+        })
+    }
+    public async findQrCodeByDeviceId(req: Request, res: Response) {
+        const deviceId: number = +req.params.id;
+        const repo = deviceRepository
+
+        repo.findOne({ select: ['qrcode_authentication'], where: { id: deviceId } }).then(dev => {
+            return res.json(dev)
+        }).catch(error => {
+            return res.json(error)
+        })
+    }
+    public async findDeviceIsAuthenticated(req: Request, res: Response) {
+        const deviceId: number = +req.params.id;
+        const repo = deviceRepository
+
+        repo.findOne({ select: ['isAuthenticated', 'qrcode_authentication'], where: { id: deviceId } }).then(dev => {
             return res.json(dev)
         }).catch(error => {
             return res.json(error)
