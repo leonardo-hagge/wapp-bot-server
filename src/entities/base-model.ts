@@ -11,10 +11,10 @@ export abstract class BaseModal {
   deletado: boolean;
 
 
-  @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   dateCreation: Date
 
-  @Column({ nullable: true, type: "datetime", default: () => "CURRENT_TIMESTAMP" })
+  @Column({ nullable: true, type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   dateModification: Date
 
 }
