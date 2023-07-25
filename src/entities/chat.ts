@@ -1,45 +1,33 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToMany, JoinColumn, ManyToOne } from "typeorm"
-import { Device } from "./device";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from "typeorm";
 import { BaseModal } from "./base-model";
+import { Device } from "./device";
+import { Message } from "./message";
 
 @Entity('chat')
 export class Chat extends BaseModal {
 
-  @ManyToOne(() => Device)
+  @Column({ nullable: true })
+  name: string;
+
+  @ManyToOne(() => Device, device => device.id)
   // @ManyToMany(() => Device, device => device.id)
   @JoinColumn()
   device: Device;
 
-  @Column({ nullable: true })
-  other_device_number: string
+  @OneToMany(() => Message, (message) => message.chat, { cascade: false })
+  messages: Message[];
 
+  @Column()
+  indentification: string;
 
-  @Column({ nullable: true })
-  from: string;
+  @Column({ nullable: true, default: false })
+  isGroupChat: boolean;
 
-  @Column({ nullable: true })
-  to: string;
-
-
-  @Column({ nullable: true })
-  alias_user: string;
-
-  @Column({ type: "text", nullable: true })
-  message: string
+  @Column({ nullable: true, default: false })
+  isPrivateChat: boolean;
 
   @Column({ nullable: true })
-  type: string;
-
-  @Column({ type: 'text', nullable: true })
-  image: string;
-
-  @Column({ default: false })
-  received: boolean;
-
-  @Column({ default: false })
-  sent: boolean;
+  groupId: string;
 
 
-  @Column({ type: "datetime", nullable: true })
-  dateEvent: Date
 }
